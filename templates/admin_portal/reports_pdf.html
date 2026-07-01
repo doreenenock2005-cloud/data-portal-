@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>DCC Portal Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        h1 { color: #1e40af; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #1e40af; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Open City Data Portal - Reports</h1>
+    <p>Generated: {{ now }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Downloads</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dataset in datasets %}
+            <tr>
+                <td>{{ dataset.title }}</td>
+                <td>{{ dataset.category.name }}</td>
+                <td>{{ dataset.download_count }}</td>
+                <td>{{ dataset.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

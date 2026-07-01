@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="py-5" style="background: var(--primary-blue);">
+    <div class="container text-center text-white">
+        <h1 class="fw-bold">About the Portal</h1>
+        <p class="lead">Building a data-driven smart city through open access to urban information</p>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="mb-5 p-4" style="background:#fef2f2; border-left: 4px solid #ef4444;">
+        <div class="d-flex align-items-center mb-3">
+            <div class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center me-3" style="width:24px;height:24px;">!</div>
+            <h4 class="mb-0 fw-bold">The Problem</h4>
+        </div>
+        <p>City data is scattered across many organizations (data silos). Data exists in different formats (not compatible). Difficult to access, share, and combine data. No central platform for data integration.</p>
+        <div class="bg-white p-3 rounded mt-3">
+            <strong>Impact:</strong>
+            <ul class="mb-0">
+                <li>Government lacks accurate insights</li>
+                <li>Developers cannot build data-driven applications</li>
+                <li>Researchers struggle with cross-domain analysis</li>
+                <li>Citizens lack data transparency</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="mb-5 p-4" style="background:#eff6ff; border-left: 4px solid #3b82f6;">
+        <div class="d-flex align-items-center mb-3">
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width:24px;height:24px;">i</div>
+            <h4 class="mb-0 fw-bold">Background</h4>
+        </div>
+        <p>A smart city relies on data-driven decisions. Dar es Salaam generates data from multiple sectors including Housing, Transport, Health, and Water & Sanitation. Currently, systems are disconnected and siloed.</p>
+        <div class="bg-white p-3 rounded mt-3">
+            <strong>Need:</strong>
+            <ul class="mb-0">
+                <li>Centralized data platform</li>
+                <li>Standardized and interoperable data</li>
+                <li>Support for urban planning, research, and innovation</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="mb-5 p-4" style="background:#f0fdf4; border-left: 4px solid #22c55e;">
+        <div class="d-flex align-items-center mb-3">
+            <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3" style="width:24px;height:24px;">✓</div>
+            <h4 class="mb-0 fw-bold">Our Solution</h4>
+        </div>
+        <p>The Open City Data Portal centralizes all city datasets, standardizes data formats, and makes data easily accessible to all stakeholders.</p>
+        <div class="row g-3 mt-2">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <i class="fas fa-database text-success me-2"></i>
+                        <strong>Centralized Repository</strong>
+                        <p class="small text-muted mb-0">All city datasets in one secure, accessible location</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <i class="fas fa-globe text-success me-2"></i>
+                        <strong>Standardized Formats</strong>
+                        <p class="small text-muted mb-0">Consistent data formats enabling easy integration and analysis</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <i class="fas fa-bullseye text-primary-custom me-2"></i>
+                    <h5 class="fw-bold">Our Mission</h5>
+                    <p>To provide transparent, accessible, and standardized urban data that empowers citizens, researchers, and developers to contribute to the development of Dar es Salaam as a smart, sustainable city.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <i class="fas fa-users text-primary-custom me-2"></i>
+                    <h5 class="fw-bold">Our Vision</h5>
+                    <p>To be the leading open data platform in East Africa, driving innovation, transparency, and evidence-based decision-making in urban development.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-unlock text-primary-custom mb-3" style="font-size:24px;"></i>
+                    <h5>Open Access</h5>
+                    <p class="small text-muted">Publicly available datasets without barriers.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-code text-primary-custom mb-3" style="font-size:24px;"></i>
+                    <h5>API Access</h5>
+                    <p class="small text-muted">RESTful API for developers and integration.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-chart-bar text-primary-custom mb-3" style="font-size:24px;"></i>
+                    <h5>Data Visualization</h5>
+                    <p class="small text-muted">Automatic charts for quick insight.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

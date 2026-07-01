@@ -1,0 +1,82 @@
+{% extends 'admin_portal/base_admin.html' %}
+{% block admin_content %}
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <div class="btn-group" role="group">
+            <a href="?role=all" class="btn btn-sm {% if role_filter == 'all' %}btn-primary{% else %}btn-outline-primary{% endif %}">All Users</a>
+            <a href="?role=public" class="btn btn-sm {% if role_filter == 'public' %}btn-primary{% else %}btn-outline-primary{% endif %}">Public</a>
+            <a href="?role=researcher" class="btn btn-sm {% if role_filter == 'researcher' %}btn-primary{% else %}btn-outline-primary{% endif %}">Researcher</a>
+            <a href="?role=developer" class="btn btn-sm {% if role_filter == 'developer' %}btn-primary{% else %}btn-outline-primary{% endif %}">Developer</a>
+            <a href="?role=admin" class="btn btn-sm {% if role_filter == 'admin' %}btn-primary{% else %}btn-outline-primary{% endif %}">Admin</a>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Joined</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for profile in users %}
+                <tr>
+                    <td>{{ profile.full_name }}</td>
+                    <td>{{ profile.user.email }}</td>
+                    <td>
+                        <span class="badge bg-{% if profile.role == 'admin' %}danger{% elif profile.role == 'researcher' %}info text-dark{% elif profile.role == 'developer' %}primary{% else %}secondary{% endif %}">
+                            {{ profile.get_role_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge bg-{% if profile.is_active %}success{% else %}danger{% endif %}">
+                            {% if profile.is_active %}Active{% else %}Suspended{% endif %}
+                        </span>
+                    </td>
+                    <td>{{ profile.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-warning" title="Toggle Status">
+                            <i class="fas fa-{% if profile.is_active %}ban{% else %}check{% endif %}"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center text-muted py-4">No users found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm" style="background:#fef2f2;">
+    <div class="card-body">
+        <h6 class="fw-bold text-danger"><i class="fas fa-shield-alt me-2"></i>Public admin registration is disabled. Only Super Admins can create administrator accounts.</h6>
+        <form method="post" class="row g-3 mt-2">
+            {% csrf_token %}
+            <div class="col-md-3">
+                <input type="text" name="full_name" class="form-control form-control-sm" placeholder="FULL NAME" required>
+            </div>
+            <div class="col-md-3">
+                <input type="email" name="email" class="form-control form-control-sm" placeholder="EMAIL" required>
+            </div>
+            <div class="col-md-3">
+                <input type="password" name="password" class="form-control form-control-sm" placeholder="PASSWORD" required>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary btn-sm w-100"><i class="fas fa-plus me-1"></i> Create Admin</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

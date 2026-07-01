@@ -1,0 +1,76 @@
+{% extends 'admin_portal/base_admin.html' %}
+{% block admin_content %}
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white border-0 fw-bold">Add New Subcategory</div>
+    <div class="card-body">
+        <form method="post" class="row g-3">
+            {% csrf_token %}
+            <div class="col-md-4">
+                <select name="category" class="form-select" required>
+                    <option value="">Select Category</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="subcategory_name" class="form-control" placeholder="Subcategory name..." required>
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="subcategory_description" class="form-control" placeholder="Description..." required>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100"><i class="fas fa-plus"></i></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="accordion" id="categoriesAccordion">
+    {% for cat in categories %}
+    <div class="card border-0 shadow-sm mb-2">
+        <div class="card-header bg-white" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapse{{ cat.id }}">
+            <div class="d-flex align-items-center">
+                <div class="me-3" style="font-size:24px;">
+                    {% if cat.icon == 'traffic' %}<i class="fas fa-traffic-light text-warning"></i>
+                    {% elif cat.icon == 'population' %}<i class="fas fa-users text-primary-custom"></i>
+                    {% elif cat.icon == 'waste' %}<i class="fas fa-trash text-secondary"></i>
+                    {% elif cat.icon == 'health' %}<i class="fas fa-hospital text-danger"></i>
+                    {% elif cat.icon == 'water' %}<i class="fas fa-tint text-info"></i>
+                    {% elif cat.icon == 'environment' %}<i class="fas fa-leaf text-success"></i>
+                    {% else %}<i class="fas fa-tag text-primary"></i>
+                    {% endif %}
+                </div>
+                <div class="flex-grow-1">
+                    <h6 class="fw-bold mb-0">{{ cat.name }}</h6>
+                    <small class="text-muted">{{ cat.dataset_count }} datasets | {{ cat.subcategories.all|length }} subcategories</small>
+                </div>
+                <i class="fas fa-chevron-down text-muted"></i>
+            </div>
+        </div>
+        <div class="collapse" id="collapse{{ cat.id }}" data-bs-parent="#categoriesAccordion">
+            <div class="card-body border-top">
+                {% if cat.subcategories.all %}
+                <div class="row g-2">
+                    {% for subcat in cat.subcategories.all %}
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center p-2 bg-light rounded">
+                            <div class="flex-grow-1">
+                                <strong class="small">{{ subcat.name }}</strong>
+                                <p class="small text-muted mb-0">{{ subcat.description|truncatechars:60 }}</p>
+                            </div>
+                            <span class="badge bg-primary">{{ subcat.dataset_count }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted small mb-0">No subcategories yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

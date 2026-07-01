@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="py-5 text-white" style="background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%);">
+    <div class="container text-center">
+        <div class="mb-3" style="font-size:64px;"><i class="fas fa-code"></i></div>
+        <h1 class="fw-bold display-4">Open Data API</h1>
+        <p class="lead mb-4">Programmatic access to Dar es Salaam city datasets — free, open, and no authentication required.</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <span class="badge bg-success px-3 py-2"><i class="fas fa-check-circle me-1"></i> No Authentication Required</span>
+            <span class="badge bg-info text-dark px-3 py-2"><i class="fas fa-lock-open me-1"></i> Freely Accessible</span>
+            <span class="badge bg-secondary px-3 py-2"><i class="fas fa-cogs me-1"></i> RESTful JSON API v1.0</span>
+        </div>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="fw-bold mb-3"><i class="fas fa-rocket text-primary me-2"></i>Getting Started</h4>
+                    <p class="text-muted">Developers do not need an API key or registration. Make standard HTTP GET requests to access datasets.</p>
+                    <div class="bg-dark text-light p-3 rounded d-flex justify-content-between align-items-center mb-4">
+                        <code class="text-success">https://data.dcc.go.tz/api/v1</code>
+                        <button class="btn btn-sm btn-outline-light" onclick="navigator.clipboard.writeText('https://data.dcc.go.tz/api/v1')"><i class="fas fa-copy"></i></button>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-globe text-primary mb-2" style="font-size:24px;"></i>
+                                    <h6 class="mb-0">Format</h6>
+                                    <small class="text-muted">JSON</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-lock-open text-warning mb-2" style="font-size:24px;"></i>
+                                    <h6 class="mb-0">Auth</h6>
+                                    <small class="text-muted">None Required</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-bolt text-warning mb-2" style="font-size:24px;"></i>
+                                    <h6 class="mb-0">Version</h6>
+                                    <small class="text-muted">v1.0 Stable</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 fw-bold py-3">
+                    <i class="fas fa-list text-primary me-2"></i>API Endpoints
+                </div>
+                <div class="card-body">
+                    <div class="mb-5">
+                        <h6 class="fw-bold"><span class="badge bg-success me-2">GET</span>/api/v1/datasets</h6>
+                        <p class="small text-muted">Retrieve all published datasets with filtering and pagination support.</p>
+                        <h6 class="fw-bold small mt-3">Query Parameters</h6>
+                        <table class="table table-sm small mb-3">
+                            <thead class="table-light"><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+                            <tbody>
+                                <tr><td>page</td><td>integer</td><td>No</td><td>Page number (default: 1)</td></tr>
+                                <tr><td>per_page</td><td>integer</td><td>No</td><td>Results per page (default: 20, max: 100)</td></tr>
+                                <tr><td>category</td><td>string</td><td>No</td><td>Filter by category slug (e.g. traffic, population)</td></tr>
+                                <tr><td>search</td><td>string</td><td>No</td><td>Search in title and description</td></tr>
+                            </tbody>
+                        </table>
+                        <p class="small fw-semibold mb-1">Example Response:</p>
+                        <div class="bg-dark text-light p-3 rounded small" style="font-family:monospace; white-space: pre;">{
+  "count": 170,
+  "next": "http://localhost:8080/api/v1/datasets/?page=2",
+  "results": [
+    {
+      "id": 1,
+      "title": "Traffic Data 2026",
+      "slug": "traffic-data-2026",
+      "description": "Traffic data across all five districts...",
+      "category": { "id": 1, "name": "Traffic Data", "slug": "traffic-data" },
+      "source_department": "Transport Department",
+      "data_owner": "Dar es Salaam City Council",
+      "region": "Dar es Salaam",
+      "temporal_extent_start": "2026-01-01",
+      "temporal_extent_end": "2026-12-31",
+      "language": "English",
+      "format": "csv",
+      "file_size": "14.2 MB",
+      "records": 45,
+      "download_count": 2340,
+      "created_at": "2026-01-15"
+    }
+  ]
+}</div>
+                    </div>
+
+                    <div class="mb-5">
+                        <h6 class="fw-bold"><span class="badge bg-success me-2">GET</span>/api/v1/datasets/{id}</h6>
+                        <p class="small text-muted">Retrieve a single published dataset by its unique ID.</p>
+                        <p class="small fw-semibold mb-1">Example Request:</p>
+                        <div class="bg-dark text-light p-3 rounded small mb-2" style="font-family:monospace;">GET /api/v1/datasets/1/</div>
+                        <p class="small fw-semibold mb-1">Example Response:</p>
+                        <div class="bg-dark text-light p-3 rounded small" style="font-family:monospace; white-space: pre;">{
+  "id": 1,
+  "title": "Traffic Data 2026",
+  "slug": "traffic-data-2026",
+  "category": { "name": "Traffic Data" },
+  "source_department": "Transport Department",
+  "data_owner": "Dar es Salaam City Council",
+  ...
+}</div>
+                    </div>
+
+                    <div class="mb-5">
+                        <h6 class="fw-bold"><span class="badge bg-success me-2">GET</span>/api/v1/categories</h6>
+                        <p class="small text-muted">Retrieve all dataset categories with dataset counts.</p>
+                        <p class="small fw-semibold mb-1">Example Response:</p>
+                        <div class="bg-dark text-light p-3 rounded small" style="font-family:monospace; white-space: pre;">[
+  { "id": 1, "name": "Traffic Data", "slug": "traffic-data", "dataset_count": 45 },
+  { "id": 2, "name": "Population Data", "slug": "population-data", "dataset_count": 30 },
+  ...
+]</div>
+                    </div>
+
+                    <div>
+                        <h6 class="fw-bold"><span class="badge bg-success me-2">GET</span>/api/v1/categories/{slug}/datasets</h6>
+                        <p class="small text-muted">Retrieve all datasets belonging to a specific category.</p>
+                        <p class="small fw-semibold mb-1">Example Request:</p>
+                        <div class="bg-dark text-light p-3 rounded small mb-2" style="font-family:monospace;">GET /api/v1/categories/traffic-transportation/datasets/</div>
+                        <p class="small fw-semibold mb-1">Example Response:</p>
+                        <div class="bg-dark text-light p-3 rounded small" style="font-family:monospace; white-space: pre;">{
+  "count": 27,
+  "results": [
+    {
+      "id": 1,
+      "title": "Road Traffic Volume 1 2026",
+      "subcategory": { "name": "Road Traffic Volume" },
+      "category": { "name": "Traffic & Transportation" },
+      "format": "csv",
+      "records": 8,
+      ...
+    }
+  ]
+}</div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h6 class="fw-bold"><span class="badge bg-info me-2">GET</span>/api/v1/subcategories/{slug}/datasets</h6>
+                        <p class="small text-muted">Retrieve all datasets for a specific subcategory within a category.</p>
+                        <p class="small fw-semibold mb-1">Example Request:</p>
+                        <div class="bg-dark text-light p-3 rounded small mb-2" style="font-family:monospace;">GET /api/v1/categories/traffic-transportation/subcategories/road-traffic-volume/datasets/</div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h6 class="fw-bold"><span class="badge bg-secondary me-2">GET</span>/api/v1/subcategories</h6>
+                        <p class="small text-muted">Retrieve all subcategories across all categories with dataset counts.</p>
+                        <p class="small fw-semibold mb-1">Example Response:</p>
+                        <div class="bg-dark text-light p-3 rounded small" style="font-family:monospace; white-space: pre;">[
+  { "id": 1, "name": "Road Traffic Volume", "category": "Traffic & Transportation", "dataset_count": 9 },
+  { "id": 2, "name": "Traffic Congestion Levels", "category": "Traffic & Transportation", "dataset_count": 9 },
+  ...
+]</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-3" style="background:#059669;color:white;">
+                <div class="card-body text-center py-4">
+                    <i class="fas fa-unlock mb-3" style="font-size:36px;"></i>
+                    <h5 class="fw-bold">Completely Free Access</h5>
+                    <small>No registration or authentication required.</small>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-header bg-white border-0 fw-bold py-3"><i class="fas fa-tachometer-alt text-warning me-2"></i>Rate Limits</div>
+                <div class="card-body">
+                    <table class="table table-sm small mb-0">
+                        <tr><td>Requests / minute</td><td class="text-end fw-bold">60</td></tr>
+                        <tr><td>Requests / hour</td><td class="text-end fw-bold">1,000</td></tr>
+                        <tr><td>Daily limit</td><td class="text-end fw-bold">10,000</td></tr>
+                        <tr><td>Max page size</td><td class="text-end fw-bold">100</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-header bg-white border-0 fw-bold py-3"><i class="fas fa-link text-info me-2"></i>Quick Links</div>
+                <div class="card-body">
+                    <ul class="list-unstyled small mb-0">
+                        <li class="mb-2"><a href="/datasets/" class="text-decoration-none"><i class="fas fa-arrow-right me-1 text-primary"></i>Browse Data Catalog</a></li>
+                        <li class="mb-2"><a href="/categories/" class="text-decoration-none"><i class="fas fa-arrow-right me-1 text-primary"></i>Explore Categories</a></li>
+                        <li class="mb-2"><a href="/about/" class="text-decoration-none"><i class="fas fa-arrow-right me-1 text-primary"></i>Open Data License</a></li>
+                        <li><a href="/contact/" class="text-decoration-none"><i class="fas fa-arrow-right me-1 text-primary"></i>Contact Support</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm" style="background: var(--primary-blue); color: white;">
+                <div class="card-body py-4">
+                    <h6 class="fw-bold mb-3"><i class="fas fa-headset me-2"></i>Developer Support</h6>
+                    <p class="small mb-3">Having trouble integrating with our API? Our team is ready to help.</p>
+                    <a href="mailto:api-support@dcc.go.tz" class="btn btn-light btn-sm w-100">api-support@dcc.go.tz</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

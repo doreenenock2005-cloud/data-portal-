@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="py-5" style="background: var(--primary-blue);">
+    <div class="container text-center text-white">
+        <h1 class="fw-bold">Contact Us</h1>
+        <p class="lead">Get in touch with the Dar es Salaam City Council Open Data Team</p>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4">Send us a Message</h4>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Full Name</label>
+                                <input type="text" class="form-control" name="full_name" placeholder="John Doe" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Email Address</label>
+                                <input type="email" class="form-control" name="email" placeholder="user@example.com" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Subject</label>
+                                <input type="text" class="form-control" name="subject" placeholder="How can we help you?" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Message</label>
+                                <textarea class="form-control" rows="4" name="message" placeholder="Your message here..." required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary w-100"><i class="fas fa-paper-plane me-2"></i>Send Message</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width:40px;height:40px;">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">Main Office</h6>
+                            <small class="text-muted">City Hall, 1 Morogoro Road<br>P.O. Box 9084<br>Dar es Salaam, Tanzania</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Contact Details</h6>
+                    <p class="mb-2 small"><i class="fas fa-phone text-success me-2"></i>+255 22 211 5371</p>
+                    <p class="mb-0 small"><i class="fas fa-envelope text-primary me-2"></i>support@dcc.go.tz</p>
+                </div>
+            </div>
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Department Contacts</h6>
+                    <p class="mb-1 small"><a href="mailto:tech-support@dcc.go.tz" class="text-decoration-none">Technical Support: tech-support@dcc.go.tz</a></p>
+                    <p class="mb-1 small"><a href="mailto:api-support@dcc.go.tz" class="text-decoration-none">API & Developer Support: api-support@dcc.go.tz</a></p>
+                    <p class="mb-0 small"><a href="mailto:data-requests@dcc.go.tz" class="text-decoration-none">Data Requests: data-requests@dcc.go.tz</a></p>
+                </div>
+            </div>
+            <div class="card border-0 shadow-sm" style="background: var(--dark-blue); color: white;">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Office Hours</h6>
+                    <div class="d-flex justify-content-between">
+                        <span>Monday - Friday</span>
+                        <span>8:00 AM - 4:00 PM</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

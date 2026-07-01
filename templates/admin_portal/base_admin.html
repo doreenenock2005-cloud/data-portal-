@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block extra_css %}
+<style>
+.sidebar-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    background: var(--dark-blue);
+    color: white;
+    z-index: 1000;
+    overflow-y: auto;
+}
+.main-content {
+    margin-left: 250px;
+    min-height: 100vh;
+}
+.admin-header {
+    background: var(--dark-blue);
+    color: white;
+    padding: 16px 24px;
+}
+.sidebar-nav a {
+    color: #cbd5e1;
+    text-decoration: none;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-left: 3px solid transparent;
+}
+.sidebar-nav a:hover, .sidebar-nav a.active {
+    color: white;
+    background: rgba(255,255,255,0.05);
+    border-left-color: var(--primary-blue);
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="sidebar-nav">
+    <div class="text-center py-4 border-bottom border-secondary">
+        <h6 class="fw-bold mb-0">Admin Panel</h6>
+    </div>
+    <nav>
+        <a href="/admin-portal/" class="{% if request.path == '/admin-portal/' %}active{% endif %}">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        <a href="/admin-portal/datasets/" class="{% if '/datasets/' in request.path and '/admin-portal/' in request.path %}active{% endif %}">
+            <i class="fas fa-folder"></i> Dataset Management
+        </a>
+        <a href="/admin-portal/categories/" class="{% if '/categories/' in request.path and '/admin-portal/' in request.path %}active{% endif %}">
+            <i class="fas fa-tags"></i> Category Management
+        </a>
+        <a href="/admin-portal/users/" class="{% if '/users/' in request.path %}active{% endif %}">
+            <i class="fas fa-users"></i> User Management
+        </a>
+        <a href="/admin-portal/reports/" class="{% if '/reports/' in request.path %}active{% endif %}">
+            <i class="fas fa-file-alt"></i> Reports
+        </a>
+        <a href="/admin-portal/messages/" class="{% if '/messages/' in request.path %}active{% endif %}">
+            <i class="fas fa-envelope"></i> Messages {% if unread_messages > 0 %}<span class="badge bg-danger ms-1">{{ unread_messages }}</span>{% endif %}
+        </a>
+    </nav>
+</div>
+<div class="main-content">
+    <div class="admin-header d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="mb-0 fw-bold">DAR ES SALAAM CITY COUNCIL - OPEN CITY DATA PORTAL ADMINISTRATION</h5>
+            <small>Welcome, Admin User</small>
+        </div>
+        <div>
+            <a href="/" class="btn btn-sm btn-warning me-2"><i class="fas fa-external-link-alt me-1"></i> Public Portal</a>
+            <a href="/accounts/logout/" class="btn btn-sm btn-danger"><i class="fas fa-sign-out-alt me-1"></i> Logout</a>
+        </div>
+    </div>
+    <div class="p-4">
+        {% block admin_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}

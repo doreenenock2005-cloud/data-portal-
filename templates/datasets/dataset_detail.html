@@ -1,0 +1,367 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<style>
+.chart-toggle .btn.active { background-color: var(--dark-blue); color: white; border-color: var(--dark-blue); }
+.chart-toggle .btn:not(.active) { background-color: white; color: var(--dark-blue); border-color: var(--dark-blue); }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/datasets/">Datasets</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ page_title }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="fw-bold mb-0">Data Visualization</h4>
+                        <div class="chart-toggle">
+                            <button class="btn btn-sm active" onclick="switchChart(this, 'bar')">
+                                <i class="fas fa-chart-bar me-1"></i> Bar Chart
+                            </button>
+                            <button class="btn btn-sm" onclick="switchChart(this, 'pie')">
+                                <i class="fas fa-chart-pie me-1"></i> Pie Chart
+                            </button>
+                        </div>
+                    </div>
+                    <canvas id="dataChart" height="350"></canvas>
+                    {% if chart_data and chart_data.labels %}
+                    <div class="mt-3 p-3 bg-light rounded">
+                        <h6 class="fw-bold mb-2">Data Breakdown</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered mb-0" id="districtTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>{{ chart_data.x_label|default:'Label' }}</th>
+                                        <th>{{ chart_data.y_label|default:'Value' }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Raw Data Preview</h5>
+                    {% if preview_rows %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead class="table-light">
+                                <tr>
+                                    {% for key in preview_rows.0.keys %}
+                                    <th>{{ key }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in preview_rows %}
+                                <tr>
+                                    {% for val in row.values %}
+                                    <td>{{ val }}</td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="small text-muted">Showing all {{ dataset.records }} records.</p>
+                    {% else %}
+                    <p class="text-muted">No preview available for this dataset.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body">
+                    <div class="text-center mb-3" style="font-size:48px;">
+                        {% if dataset.category.icon == 'population' %}<i class="fas fa-users text-primary-custom"></i>
+                        {% elif dataset.category.icon == 'traffic' %}<i class="fas fa-traffic-light text-warning"></i>
+                        {% elif dataset.category.icon == 'waste' %}<i class="fas fa-trash text-secondary"></i>
+                        {% elif dataset.category.icon == 'health' %}<i class="fas fa-hospital text-danger"></i>
+                        {% elif dataset.category.icon == 'water' %}<i class="fas fa-tint text-info"></i>
+                        {% elif dataset.category.icon == 'environment' %}<i class="fas fa-leaf text-success"></i>
+                        {% else %}<i class="fas fa-database text-primary"></i>
+                        {% endif %}
+                    </div>
+                    <h5 class="fw-bold text-center mb-2">{{ dataset.title }}</h5>
+                    <span class="badge bg-info text-dark d-block text-center mb-2">{{ dataset.subcategory.name }}</span>
+                    <span class="badge bg-primary d-block text-center mb-3">{{ dataset.category.name }}</span>
+
+                    <table class="table table-sm small">
+                        <tr><td class="fw-semibold">Data Owner</td><td>{{ dataset.data_owner }}</td></tr>
+                        <tr><td class="fw-semibold">Created</td><td>{{ dataset.created_at|date:"M d, Y" }}</td></tr>
+                        <tr><td class="fw-semibold">Modified</td><td>{{ dataset.updated_at|date:"M d, Y" }}</td></tr>
+                        <tr><td class="fw-semibold">Source Department</td><td>{{ dataset.source_department }}</td></tr>
+                        <tr><td class="fw-semibold">Language</td><td>{{ dataset.language }}</td></tr>
+                        <tr><td class="fw-semibold">Region</td><td>{{ dataset.region }}</td></tr>
+                        <tr><td class="fw-semibold">Temporal Extent</td><td>{{ dataset.temporal_extent_start }} - {{ dataset.temporal_extent_end }}</td></tr>
+                    </table>
+
+                    <div class="bg-light p-3 rounded small mb-3">
+                        {{ dataset.description }}
+                    </div>
+
+                    {% if user.is_authenticated %}
+                    <button class="btn btn-success w-100 mb-3" data-bs-toggle="modal" data-bs-target="#downloadModal">
+                        <i class="fas fa-download me-2"></i>Download Dataset
+                    </button>
+                    <div class="d-flex justify-content-between small text-muted">
+                        <span>Format: {{ dataset.format|upper }}, {{ dataset.file_size }}</span>
+                        <span>{{ dataset.download_count }} downloads</span>
+                    </div>
+                    {% else %}
+                    <button class="btn btn-success w-100 mb-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        <i class="fas fa-download me-2"></i>Download Dataset
+                    </button>
+                    <p class="small text-muted text-center">Login required to download</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Download Format Modal -->
+<div class="modal fade" id="downloadModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Choose Download Format</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-3">Select your preferred format for <strong>{{ dataset.title }}</strong>:</p>
+                <div class="d-grid gap-2">
+                    <a href="/datasets/{{ dataset.slug }}/download/?format=csv" class="btn btn-outline-primary w-100 text-start">
+                        <i class="fas fa-file-csv me-2"></i> CSV Format (Comma Separated Values)
+                    </a>
+                    <a href="/datasets/{{ dataset.slug }}/download/?format=xlsx" class="btn btn-outline-success w-100 text-start">
+                        <i class="fas fa-file-excel me-2"></i> Excel Format (XLSX)
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Login Required</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted">You must be logged in to download datasets.</p>
+                <a href="/accounts/login/" class="btn btn-primary w-100 mb-2">Login</a>
+                <a href="/accounts/signup/" class="btn btn-outline-secondary w-100">Sign Up</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const chartData = {{ chart_data|safe }};
+    const chartLabels = chartData.labels || [];
+    const chartValues = chartData.values || [];
+    const chartType = chartData.type || 'bar';
+    let chartInstance = null;
+
+    function renderChart(type) {
+        const ctx = document.getElementById('dataChart').getContext('2d');
+        if (chartInstance) chartInstance.destroy();
+        
+        const xLabel = chartData.x_label || 'Label';
+        const yLabel = chartData.y_label || 'Value';
+        
+        const config = {
+            type: type,
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: yLabel,
+                    data: chartValues,
+                    backgroundColor: type === 'pie' ? 
+                        ['#1e40af', '#059669', '#d97706', '#7c3aed', '#dc2626', '#0ea5e9', '#64748b', '#ec4899'] :
+                        '#1e40af',
+                    borderColor: '#fff',
+                    borderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { 
+                        labels: { 
+                            color: 'white',
+                            font: { size: 13, weight: 'bold' }
+                        } 
+                    },
+                    title: {
+                        display: true,
+                        text: type === 'bar' ? `${yLabel} by ${xLabel}` : `${yLabel} Distribution`,
+                        color: 'white',
+                        font: { size: 16, weight: 'bold' }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                if (type === 'pie') {
+                                    return context.label + ': ' + context.raw.toLocaleString();
+                                }
+                                return yLabel + ': ' + context.raw.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        if (type === 'bar') {
+            config.options.scales = {
+                y: { 
+                    ticks: { 
+                        color: '#e2e8f0', 
+                        font: { size: 12 }
+                    }, 
+                    grid: { color: 'rgba(255,255,255,0.15)' },
+                    title: { 
+                        display: true, 
+                        text: yLabel, 
+                        color: '#f1f5f9',
+                        font: { size: 14, weight: 'bold' }
+                    }
+                },
+                x: { 
+                    ticks: { 
+                        color: '#e2e8f0', 
+                        font: { size: 12, weight: 'bold' }
+                    }, 
+                    grid: { color: 'rgba(255,255,255,0.15)' },
+                    title: { 
+                        display: true, 
+                        text: xLabel, 
+                        color: '#f1f5f9',
+                        font: { size: 14, weight: 'bold' }
+                    }
+                }
+            };
+            config.plugins = [{
+                afterDatasetsDraw: function(chart) {
+                    const ctx = chart.ctx;
+                    chart.data.datasets.forEach((dataset, i) => {
+                        const meta = chart.getDatasetMeta(i);
+                        meta.data.forEach((bar, index) => {
+                            const value = chart.data.datasets[i].data[index];
+                            ctx.fillStyle = '#ffffff';
+                            ctx.font = 'bold 12px Arial';
+                            ctx.textAlign = 'center';
+                            ctx.fillText(value.toLocaleString(), bar.x, bar.y - 12);
+                        });
+                    });
+                }
+            }];
+        }
+        
+        chartInstance = new Chart(ctx, config);
+    }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                if (type === 'pie') {
+                                    return context.label + ': ' + context.raw.toLocaleString();
+                                }
+                                return yLabel + ': ' + context.raw.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                scales: type === 'bar' ? {
+                    y: { 
+                        ticks: { 
+                            color: '#e2e8f0', 
+                            font: { size: 11 }
+                        }, 
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        title: { 
+                            display: true, 
+                            text: yLabel, 
+                            color: '#f1f5f9',
+                            font: { size: 13, weight: 'bold' }
+                        }
+                    },
+                    x: { 
+                        ticks: { 
+                            color: '#e2e8f0', 
+                            font: { size: 11 }
+                        }, 
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        title: { 
+                            display: true, 
+                            text: xLabel, 
+                            color: '#f1f5f9',
+                            font: { size: 13, weight: 'bold' }
+                        }
+                    }
+                } : {}
+            },
+            plugins: type === 'bar' ? [{
+                afterDatasetsDraw: function(chart) {
+                    const ctx = chart.ctx;
+                    chart.data.datasets.forEach((dataset, i) => {
+                        const meta = chart.getDatasetMeta(i);
+                        meta.data.forEach((bar, index) => {
+                            const value = chart.data.datasets[i].data[index];
+                            ctx.fillStyle = '#ffffff';
+                            ctx.font = 'bold 11px Arial';
+                            ctx.textAlign = 'center';
+                            ctx.fillText(value.toLocaleString(), bar.x, bar.y - 10);
+                        });
+                    });
+                }
+            }] : []
+        });
+    }
+
+    function switchChart(btn, type) {
+        document.querySelectorAll('.chart-toggle .btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderChart(type);
+    }
+
+    if (chartLabels.length > 0) {
+        const initialType = chartType === 'pie' ? 'pie' : 'bar';
+        renderChart(initialType);
+    }
+    
+    const districtTable = document.getElementById('districtTable');
+    if (districtTable && chartLabels.length > 0) {
+        const tbody = districtTable.querySelector('tbody');
+        tbody.innerHTML = '';
+        for (let i = 0; i < chartLabels.length; i++) {
+            const row = `<tr><td>${chartLabels[i]}</td><td>${chartValues[i].toLocaleString()}</td></tr>`;
+            tbody.innerHTML += row;
+        }
+    }
+</script>
+{% endblock %}

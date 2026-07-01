@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/categories/">Categories</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ page_title }}</li>
+        </ol>
+    </nav>
+
+    <div class="p-4 mb-5 text-center text-white" style="background: var(--primary-blue); border-radius: 12px;">
+        <div style="font-size:48px;" class="mb-3">
+            {% if category.icon == 'traffic' %}<i class="fas fa-traffic-light text-warning"></i>
+            {% elif category.icon == 'population' %}<i class="fas fa-users text-white"></i>
+            {% elif category.icon == 'waste' %}<i class="fas fa-trash text-white"></i>
+            {% elif category.icon == 'health' %}<i class="fas fa-hospital text-white"></i>
+            {% elif category.icon == 'water' %}<i class="fas fa-tint text-white"></i>
+            {% elif category.icon == 'environment' %}<i class="fas fa-leaf text-white"></i>
+            {% endif %}
+        </div>
+        <h2 class="fw-bold">{{ category.name }}</h2>
+        <p class="mb-0 text-white-75">{{ category.dataset_count }} Datasets</p>
+    </div>
+
+    {% if subcategories %}
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <h6 class="fw-bold mb-3">Subcategories</h6>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="/categories/{{ category.slug }}/" class="btn btn-sm {% if not request.GET.subcategory %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                    All
+                </a>
+                {% for subcat in subcategories %}
+                <a href="?subcategory={{ subcat.slug }}" 
+                   class="btn btn-sm {% if request.GET.subcategory == subcat.slug %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                    {{ subcat.name }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row g-4">
+        {% for dataset in datasets %}
+        <div class="col-md-6 col-lg-4">
+            <a href="/datasets/{{ dataset.slug }}/" class="text-decoration-none text-dark">
+                <div class="card dataset-card h-100">
+                    <div class="card-body">
+                        <h5 class="fw-bold mb-2">{{ dataset.title }}</h5>
+                        {% if dataset.subcategory %}
+                        <span class="badge bg-info text-dark mb-2">{{ dataset.subcategory.name }}</span>
+                        {% endif %}
+                        <span class="badge bg-primary mb-2">{{ dataset.category.name }}</span>
+                        <p class="text-muted small mb-3">{{ dataset.description|truncatechars:100 }}</p>
+                        <div class="d-flex gap-2 mb-3">
+                            <span class="badge bg-light text-dark border">{{ dataset.format|upper }}</span>
+                            <span class="badge bg-light text-dark border">{{ dataset.file_size }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between small text-muted">
+                            <span><i class="fas fa-calendar me-1"></i> {{ dataset.updated_at|date:"M d, Y" }}</span>
+                            <span><i class="fas fa-arrow-down me-1"></i> {{ dataset.download_count }}</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-warning">No datasets found in this category.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

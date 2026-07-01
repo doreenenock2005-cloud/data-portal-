@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Open City Data Portal - Dar es Salaam City Council{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-blue: #1e40af;
+            --dark-blue: #0f172a;
+            --light-bg: #f8fafc;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .navbar-brand { font-weight: 700; letter-spacing: -0.5px; }
+        .btn-primary { background-color: var(--primary-blue); border-color: var(--primary-blue); }
+        .btn-primary:hover { background-color: #1d4ed8; border-color: #1d4ed8; }
+        .text-primary-custom { color: var(--primary-blue); }
+        .bg-primary-custom { background-color: var(--primary-blue); }
+        .hero-section {
+            position: relative;
+            min-height: 520px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            background: linear-gradient(135deg, rgba(15,23,42,0.92) 0%, rgba(30,64,175,0.85) 100%),
+                        url('https://images.unsplash.com/photo-1547471080-7ccdcaa38b4c?w=1600') center/cover no-repeat;
+            background-size: cover;
+        }
+        .category-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+        .dataset-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+        .dataset-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        .sidebar-nav {
+            min-height: 100vh;
+            background: var(--dark-blue);
+            color: white;
+        }
+        .sidebar-nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            color: white;
+            background: rgba(255,255,255,0.05);
+            border-left-color: var(--primary-blue);
+        }
+        .admin-header {
+            background: var(--dark-blue);
+            color: white;
+            padding: 16px 24px;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Public Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+                <div class="rounded-circle bg-primary-custom text-white d-flex align-items-center justify-content-center fw-bold" style="width:40px;height:40px;">DSM</div>
+                <div>
+                    <div class="fw-bold text-dark" style="font-size:14px;">HALMASHAURI YA JIJI LA DAR ES SALAAM</div>
+                    <div class="text-muted" style="font-size:12px;">Open City Data Portal</div>
+                </div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="nav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/datasets/">Datasets</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/categories/">Categories</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/api/v1/">API</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/about/">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/contact/">Contact</a></li>
+                </ul>
+                <div class="d-flex gap-2 align-items-center">
+                    {% if user.is_authenticated %}
+                        <span class="me-2">Welcome, {{ user.first_name }}</span>
+                        {% if user.profile.role == 'admin' %}
+                            <a href="/admin-portal/" class="btn btn-sm btn-primary">Dashboard</a>
+                        {% else %}
+                            <a href="/datasets/" class="btn btn-sm btn-outline-primary">Browse</a>
+                        {% endif %}
+                        <a href="/accounts/logout/" class="btn btn-sm btn-outline-secondary">Logout</a>
+                    {% else %}
+                        <a href="/accounts/signup/" class="btn btn-sm btn-outline-primary">Sign Up</a>
+                        <a href="/accounts/login/" class="btn btn-sm btn-primary">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light pt-5 pb-3 mt-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <h5 class="fw-bold">Dar es Salaam City Council</h5>
+                    <p class="small text-white-50">Official central clearinghouse repository for open city data packages in Tanzania.</p>
+                    <span class="badge bg-primary">Official Portal v2.1</span>
+                </div>
+                <div class="col-md-3">
+                    <h5 class="fw-bold">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-white-50 text-decoration-none">Home</a></li>
+                        <li><a href="/datasets/" class="text-white-50 text-decoration-none">Datasets</a></li>
+                        <li><a href="/categories/" class="text-white-50 text-decoration-none">Categories</a></li>
+                        <li><a href="/api/v1/" class="text-white-50 text-decoration-none">API</a></li>
+                        <li><a href="/about/" class="text-white-50 text-decoration-none">About</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5 class="fw-bold">Data Domains</h5>
+                    <ul class="list-unstyled">
+                        {% for cat in categories %}
+                        <li><a href="/categories/{{ cat.slug }}/" class="text-white-50 text-decoration-none">{{ cat.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5 class="fw-bold">Official Contact</h5>
+                    <ul class="list-unstyled">
+                        <li class="small text-white-50"><i class="fas fa-map-marker-alt text-success me-2"></i>City Hall, 1 Morogoro Road, P.O. Box 9084, Dar es Salaam</li>
+                        <li class="small text-white-50 mt-2"><i class="fas fa-envelope text-success me-2"></i>support@dcc.go.tz</li>
+                        <li class="small text-white-50 mt-2"><i class="fas fa-phone text-success me-2"></i>+255 22 211 5371</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-secondary my-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <small class="text-white-50">Terms of Service | Privacy Policy | Open Data License (TZ-ODL)</small>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <small class="text-white-50">&copy; 2026 Halmashauri ya Jiji la Dar es Salaam. All Rights Reserved.</small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

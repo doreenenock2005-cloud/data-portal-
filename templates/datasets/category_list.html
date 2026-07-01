@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/categories/">Categories</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ page_title }}</li>
+        </ol>
+    </div>
+    <h2 class="fw-bold text-center mb-5">{{ page_title }}</h2>
+    <div class="row g-4">
+        {% for cat in categories %}
+        <div class="col-12 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-3" style="font-size:28px;">
+                            {% if cat.icon == 'traffic' %}<i class="fas fa-traffic-light text-warning"></i>
+                            {% elif cat.icon == 'population' %}<i class="fas fa-users text-primary-custom"></i>
+                            {% elif cat.icon == 'waste' %}<i class="fas fa-trash text-secondary"></i>
+                            {% elif cat.icon == 'health' %}<i class="fas fa-hospital text-danger"></i>
+                            {% elif cat.icon == 'water' %}<i class="fas fa-tint text-info"></i>
+                            {% elif cat.icon == 'environment' %}<i class="fas fa-leaf text-success"></i>
+                            {% else %}<i class="fas fa-folder text-primary"></i>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1">
+                            <h4 class="fw-bold mb-0">{{ cat.name }}</h4>
+                            <p class="text-muted small mb-0">{{ cat.dataset_count }} Datasets | {{ cat.subcategories.all|length }} Subcategories</p>
+                        </div>
+                        <a href="/categories/{{ cat.slug }}/" class="btn btn-primary">Browse</a>
+                    </div>
+                    <div class="row g-3 mt-2">
+                        {% for subcat in cat.subcategories.all %}
+                        <div class="col-md-4">
+                            <a href="/datasets/?category={{ cat.slug }}&subcategory={{ subcat.slug }}" class="text-decoration-none text-dark">
+                                <div class="card subcategory-card p-3">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold text-dark mb-1">{{ subcat.name }}</h6>
+                                        <p class="text-muted small mb-2">{{ subcat.description|truncatechars:70 }}</p>
+                                        <span class="badge bg-light text-dark border small">{{ subcat.dataset_count }} datasets</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
