@@ -19,22 +19,22 @@
     <div class="row g-4">
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm mb-4">
-                <div class="card-body">
+                <div class="card-body" style="background: #0f172a; border-radius: 12px;">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="fw-bold mb-0">Data Visualization</h4>
+                        <h4 class="fw-bold mb-0 text-white">Data Visualization</h4>
                         <div class="chart-toggle">
-                            <button class="btn btn-sm active" onclick="switchChart(this, 'bar')">
+                            <button class="btn btn-sm active" onclick="switchChart(this, 'bar')" style="background: var(--dark-blue); color: white; border-color: var(--dark-blue);">
                                 <i class="fas fa-chart-bar me-1"></i> Bar Chart
                             </button>
-                            <button class="btn btn-sm" onclick="switchChart(this, 'pie')">
+                            <button class="btn btn-sm" onclick="switchChart(this, 'pie')" style="background: white; color: var(--dark-blue); border-color: var(--dark-blue);">
                                 <i class="fas fa-chart-pie me-1"></i> Pie Chart
                             </button>
                         </div>
                     </div>
                     <canvas id="dataChart" height="350"></canvas>
                     {% if chart_data and chart_data.labels %}
-                    <div class="mt-3 p-3 bg-light rounded">
-                        <h6 class="fw-bold mb-2">Data Breakdown</h6>
+                    <div class="mt-3 p-3 rounded" style="background: #1e293b;">
+                        <h6 class="fw-bold mb-2 text-white">Data Breakdown</h6>
                         <div class="table-responsive">
                             <table class="table table-sm table-bordered mb-0" id="districtTable">
                                 <thead class="table-light">
@@ -283,64 +283,6 @@
         }
         
         chartInstance = new Chart(ctx, config);
-    }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                if (type === 'pie') {
-                                    return context.label + ': ' + context.raw.toLocaleString();
-                                }
-                                return yLabel + ': ' + context.raw.toLocaleString();
-                            }
-                        }
-                    }
-                },
-                scales: type === 'bar' ? {
-                    y: { 
-                        ticks: { 
-                            color: '#e2e8f0', 
-                            font: { size: 11 }
-                        }, 
-                        grid: { color: 'rgba(255,255,255,0.1)' },
-                        title: { 
-                            display: true, 
-                            text: yLabel, 
-                            color: '#f1f5f9',
-                            font: { size: 13, weight: 'bold' }
-                        }
-                    },
-                    x: { 
-                        ticks: { 
-                            color: '#e2e8f0', 
-                            font: { size: 11 }
-                        }, 
-                        grid: { color: 'rgba(255,255,255,0.1)' },
-                        title: { 
-                            display: true, 
-                            text: xLabel, 
-                            color: '#f1f5f9',
-                            font: { size: 13, weight: 'bold' }
-                        }
-                    }
-                } : {}
-            },
-            plugins: type === 'bar' ? [{
-                afterDatasetsDraw: function(chart) {
-                    const ctx = chart.ctx;
-                    chart.data.datasets.forEach((dataset, i) => {
-                        const meta = chart.getDatasetMeta(i);
-                        meta.data.forEach((bar, index) => {
-                            const value = chart.data.datasets[i].data[index];
-                            ctx.fillStyle = '#ffffff';
-                            ctx.font = 'bold 11px Arial';
-                            ctx.textAlign = 'center';
-                            ctx.fillText(value.toLocaleString(), bar.x, bar.y - 10);
-                        });
-                    });
-                }
-            }] : []
-        });
     }
 
     function switchChart(btn, type) {
