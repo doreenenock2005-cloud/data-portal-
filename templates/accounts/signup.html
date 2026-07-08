@@ -11,6 +11,27 @@ function togglePassword(fieldId, btn) {
         btn.innerHTML = '<i class="fas fa-eye"></i>';
     }
 }
+
+document.getElementById('signupForm').addEventListener('submit', function(e) {
+    const pw1 = document.getElementById('signupPassword1').value;
+    const pw2 = document.getElementById('signupPassword2').value;
+    if (pw1 !== pw2) {
+        e.preventDefault();
+        alert('Passwords do not match.');
+        return;
+    }
+    if (pw1.length < 12) {
+        e.preventDefault();
+        alert('Password must be at least 12 characters long.');
+        return;
+    }
+    // Fallback redirect if server doesn't redirect
+    setTimeout(function() {
+        if (document.querySelector('.alert-success')) {
+            window.location.href = '/accounts/login/';
+        }
+    }, 500);
+});
 </script>
 {% endblock %}
 {% block content %}
@@ -28,24 +49,39 @@ function togglePassword(fieldId, btn) {
                     </div>
                     {% if messages %}
                         {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                            {% if message.tags == 'error' %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                            {% elif message.tags == 'success' %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                            {% else %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                            {% endif %}
                         {% endfor %}
                     {% endif %}
-                    <form method="post">
+                    <form method="post" id="signupForm">
                         {% csrf_token %}
                         <div class="row g-3">
                             <div class="col-md-12">
                                 <label class="form-label fw-semibold">Full Name</label>
-                                <input type="text" name="full_name" class="form-control" placeholder="John Doe" required>
+                                <input type="text" name="full_name" class="form-control" placeholder="John Doe" value="{{ request.POST.full_name|default:'' }}" required>
                             </div>
                             <div class="col-md-12">
                                 <label class="form-label fw-semibold">Email Address</label>
-                                <input type="email" name="email" class="form-control" placeholder="user@example.com" required>
+                                <input type="email" name="email" class="form-control" placeholder="user@example.com" value="{{ request.POST.email|default:'' }}" required>
                             </div>
                             <div class="col-md-12">
                                 <label class="form-label fw-semibold">Password</label>
                                 <div class="input-group">
-                                    <input type="password" name="password1" class="form-control" id="signupPassword1" required>
+                                    <input type="password" name="password1" class="form-control" id="signupPassword1" required minlength="12">
                                     <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('signupPassword1', this)">
                                         <i class="fas fa-eye"></i>
                                     </button>
@@ -74,10 +110,6 @@ function togglePassword(fieldId, btn) {
                             <i class="fas fa-users me-2"></i>Create Account
                         </button>
                     </form>
-                    <div class="alert alert-warning mt-3 small">
-                        <i class="fas fa-shield-alt me-1"></i>
-                        Note: Administrator access is granted internally by system administrators.
-                    </div>
                     <p class="text-center mt-3 mb-0 small">Already have an account? <a href="/accounts/login/" class="text-decoration-none">Login</a></p>
                 </div>
             </div>

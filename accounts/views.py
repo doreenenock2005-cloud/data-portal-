@@ -61,7 +61,7 @@ def signup_view(request):
             profile.role = role
             profile.save()
             messages.success(request, 'Account created successfully. Please log in.')
-            return redirect('accounts:login')
+            return redirect('/accounts/login/')
     return render(request, 'accounts/signup.html')
 
 def logout_view(request):
