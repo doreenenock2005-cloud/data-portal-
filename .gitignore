@@ -1,0 +1,42 @@
+#python
+*.pyc
+__pycache__/
+.env
+
+#Virtual Environment
+venv/
+env/
+.venv/
+
+#SQlite database
+db.sqlite3
+
+#VsCode
+.vscode/
+
+#Python Bytecode
+*.pyc
+__pycache__/
+
+#Python Cache
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# macOS
+.DS_Store
+
+#logs
+.log
+
+# Windows files
+Thumbs.db
+
+# Build and distribution files
+dist/
+*.egg-info/
+
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
